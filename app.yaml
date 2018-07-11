@@ -1,0 +1,19 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /get_items.js
+  static_files: lib/appengine-subscriber/get_items.js
+  upload: lib/appengine-subscriber/get_items.js
+- url: /.*
+  script: main.app
+- url: /cleanup
+  script: main.app
+  login: admin
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
