@@ -16,7 +16,8 @@
 """Simple subscriber that aggregates all feeds together."""
 
 from google.appengine.ext import vendor
-vendor.add("lib/appengine-subscriber")
+#vendor.add("lib/appengine_subscriber")
+vendor.add(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib'))
 
 import hashlib
 import json
@@ -28,11 +29,13 @@ import feedparser
 import jinja2
 import webapp2
 
+# from appengine_subscriber import
+
 from yt_usage_policies import apply_usage_policy
 
 from google.appengine.ext import db
 
-PATH_TO_APPENGINE_SUBSCRIBER_SUBMODULE = 'lib/appengine-subscriber/'
+PATH_TO_APPENGINE_SUBSCRIBER_SUBMODULE = 'lib/appengine_subscriber/'
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
