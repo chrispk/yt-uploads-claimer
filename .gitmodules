@@ -1,3 +1,6 @@
 [submodule "lib/appengine-subscriber"]
 	path = lib/appengine-subscriber
 	url = https://github.com/pubsubhubbub/appengine-subscriber.git
+[submodule "lib/appengine_subscriber"]
+	path = lib/appengine_subscriber
+	url = https://github.com/pubsubhubbub/appengine-subscriber.git
