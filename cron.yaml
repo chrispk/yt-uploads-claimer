@@ -2,3 +2,6 @@ cron:
 - description: remove old entries
   url: /cleanup
   schedule: every 1 hours
+- description: refresh subscriptions
+  url: /refresh
+  schedule: every 24 hours

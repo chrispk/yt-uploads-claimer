@@ -246,5 +246,6 @@ app = webapp2.WSGIApplication(
      # Wildcard below so we can test multiple subscribers in a single app.
      (r'/subscriber.*', InputHandler),
      (r'/', ViewHandler),
-     (r'/cleanup', CleanupHandler)],
+     (r'/cleanup', CleanupHandler),
+     (r'/refresh', RefreshHandler)],
     debug=True)
