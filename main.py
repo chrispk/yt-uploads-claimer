@@ -257,7 +257,7 @@ class RefreshHandler(webapp2.RequestHandler):
     for channel_id in CHANNEL_IDS:
       try:
         body = urllib.urlencode({
-          'hub.callback': server_url+'/subscriber/'+channel_id,
+          'hub.callback': 'https://'+server_url+'/subscriber/'+channel_id,
           'hub.mode': 'subscribe',
           'hub.topic': 'https://www.youtube.com/feeds/videos.xml?channel_id='+channel_id,
           'hub.lease_seconds': 864000
