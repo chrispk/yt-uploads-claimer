@@ -11,6 +11,9 @@ handlers:
 - url: /cleanup
   script: main.app
   login: admin
+- url: /refresh
+  script: main.app
+  login: admin
 
 libraries:
 - name: webapp2
