@@ -1,0 +1,6 @@
+indexes:
+- kind: TopicUpdate
+  properties:
+  - name: callback
+  - name: updated
+    direction: desc

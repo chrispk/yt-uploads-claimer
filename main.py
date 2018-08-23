@@ -16,8 +16,8 @@
 """Simple subscriber that aggregates all feeds together."""
 
 from google.appengine.ext import vendor
-#vendor.add("lib/appengine_subscriber")
-vendor.add(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib'))
+vendor.add("lib/appengine-subscriber")
+#vendor.add(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib'))
 
 import hashlib
 import json
@@ -28,14 +28,18 @@ import time
 import feedparser
 import jinja2
 import webapp2
+import urllib
 
 # from appengine_subscriber import
+
+from yt_co_ids import CHANNEL_IDS
 
 from yt_usage_policies import apply_usage_policy
 
 from google.appengine.ext import db
+from google.appengine.api import urlfetch, app_identity
 
-PATH_TO_APPENGINE_SUBSCRIBER_SUBMODULE = 'lib/appengine_subscriber/'
+PATH_TO_APPENGINE_SUBSCRIBER_SUBMODULE = 'lib/appengine-subscriber/'
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -242,6 +246,34 @@ class ItemsHandler(webapp2.RequestHandler):
                     'callback': update.callback})
     self.response.out.write(json.dumps(items))
 
+class RefreshHandler(webapp2.RequestHandler):
+  """Refreshes Google Hub subscriptions to YouTube Channel topics (using CHANNEL_IDS in yt_co_ids.py)"""
+
+  def get(self):
+    # get host for callback URL - if testing locally set server_url to your YT Upload Claimer host (e.g. https://example.com)
+    server_url = app_identity.get_default_version_hostname()
+    count = 0
+
+    for channel_id in CHANNEL_IDS:
+      try:
+        body = urllib.urlencode({
+          'hub.callback': server_url+'/subscriber/'+channel_id,
+          'hub.mode': 'subscribe',
+          'hub.topic': 'https://www.youtube.com/feeds/videos.xml?channel_id='+channel_id,
+          'hub.lease_seconds': 864000
+        })
+        result = urlfetch.fetch(
+          url="https://pubsubhubbub.appspot.com/subscribe",
+          payload=body,
+          method=urlfetch.POST,
+          headers={'Content-Type': 'application/x-www-form-urlencoded'})
+        if result.status_code == 202:
+          count=count+1
+      except urlfetch.Error:
+        logging.exception('Caught exception subscribing to channel ID: %s', channel_id)
+
+      logging.info('Subscribed to %d of %d channel topics', count, len(CHANNEL_IDS))
+      self.response.write(result.content)
 
 app = webapp2.WSGIApplication(
     [(r'/items', ItemsHandler),
