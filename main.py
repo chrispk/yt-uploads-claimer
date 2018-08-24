@@ -259,7 +259,7 @@ class RefreshHandler(webapp2.RequestHandler):
         body = urllib.urlencode({
           'hub.callback': 'https://'+server_url+'/subscriber/'+channel_id,
           'hub.mode': 'subscribe',
-          'hub.topic': 'https://www.youtube.com/feeds/videos.xml?channel_id='+channel_id,
+          'hub.topic': 'https://www.youtube.com/xml/feeds/videos.xml?channel_id='+channel_id,
           'hub.lease_seconds': 864000
         })
         result = urlfetch.fetch(
