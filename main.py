@@ -252,7 +252,12 @@ class RefreshHandler(webapp2.RequestHandler):
   def get(self):
     # get host for callback URL - if testing locally set server_url to your YT Upload Claimer host (e.g. https://example.com)
     server_url = app_identity.get_default_version_hostname()
-    protocol = 'https://' if server_url.endswith('.appspot.com') and server_url.count('.') == 1 else 'http://'
+    protocol = 'https://'
+    # use 'http://' if using non-default AppEngine routing that does not support http over SSL/TLS
+    # domains ending with .appspot.com with mopre than one subdomain extension (example1.example2.appspot.com) will be unsecured
+    if (server_url.endswith('.appspot.com') and server_url.count('.') != 2):
+      protocol = 'http://'
+
     count = 0
 
     for channel_id in CHANNEL_IDS:
