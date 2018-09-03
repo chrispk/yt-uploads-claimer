@@ -252,12 +252,13 @@ class RefreshHandler(webapp2.RequestHandler):
   def get(self):
     # get host for callback URL - if testing locally set server_url to your YT Upload Claimer host (e.g. https://example.com)
     server_url = app_identity.get_default_version_hostname()
+    protocol = 'https://' if server_url.count('.') == 1 else 'http://'
     count = 0
 
     for channel_id in CHANNEL_IDS:
       try:
         body = urllib.urlencode({
-          'hub.callback': 'https://'+server_url+'/subscriber/'+channel_id,
+          'hub.callback': protocol+server_url+'/subscriber/'+channel_id,
           'hub.mode': 'subscribe',
           'hub.topic': 'https://www.youtube.com/xml/feeds/videos.xml?channel_id='+channel_id,
           'hub.lease_seconds': 864000
